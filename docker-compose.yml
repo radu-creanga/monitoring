@@ -1,0 +1,26 @@
+graphite-carbon:
+  build: graphite-carbon
+  restart: always
+  ports:
+    - 2003:2003
+
+graphite-api:
+  build: graphite-api
+  restart: always
+  links:
+    - graphite-carbon
+  volumes_from:
+    - graphite-carbon
+
+grafana:
+  image: grafana/grafana
+  restart: always
+  ports:
+    - 80:3000
+  links:
+    - graphite-api
+  environment:
+    GF_SERVER_DOMAIN: monitor.mblb.net
+    GF_SECURITY_ALLOW_SIGN_UP: 'false'
+    GF_SECURITY_ALLOW_ORG_CREATE: 'false'
+    GF_SECURITY_ALLOW_AUTO_ASSIGN_ORG: 'true'
